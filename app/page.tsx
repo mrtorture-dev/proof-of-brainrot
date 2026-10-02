@@ -19,7 +19,10 @@ export default function Home() {
   const miningIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const motionThreshold = 1.5; // Sensitivity to movement
 
-  // Brainrot Phrases for TTS
+  // Refs for images
+  const imgRef = useRef<HTMLImageElement>(null);
+
+  // Brainrot Phrases & Images
   const brainrotPhrases = [
     "SIX SEVEN!",
     "TUNG TUNG SAHUR!",
@@ -29,6 +32,14 @@ export default function Home() {
     "BOMBARDIRO CROCODILO!",
     "SIX SEVEN, SIX SEVEN!",
     "WHAT THE SIGMA!"
+  ];
+
+  const brainrotImages = [
+    "https://media.giphy.com/media/Lopx9eUi34rbq/giphy.gif", // Elmo fire
+    "https://media.giphy.com/media/11a9K7nWGqpAEE/giphy.gif", // Spongebob crazy
+    "https://api.dicebear.com/9.x/bottts/svg?seed=brainrot&scale=150", // Robot
+    "https://api.dicebear.com/9.x/pixel-art/svg?seed=sigma&scale=150", // Pixel sigma
+    "https://api.dicebear.com/9.x/glass/svg?seed=aura&scale=150" // Weird shapes
   ];
 
   const triggerBrainrotEvent = () => {
@@ -56,7 +67,24 @@ export default function Home() {
       });
     }
 
-    // 2. Audio Attack (Web Speech API / TTS for max cringe)
+    // 2. Image Flash (Anime.js)
+    if (imgRef.current) {
+      const randomImg = brainrotImages[Math.floor(Math.random() * brainrotImages.length)];
+      imgRef.current.src = randomImg;
+      
+      anime({
+        targets: imgRef.current,
+        opacity: [0, 0.9, 0],
+        scale: [0.5, 2],
+        rotate: () => anime.random(-45, 45),
+        translateX: () => anime.random(-150, 150),
+        translateY: () => anime.random(-150, 150),
+        duration: 800,
+        easing: 'easeOutExpo'
+      });
+    }
+
+    // 3. Audio Attack (Web Speech API / TTS for max cringe)
     if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
       const phrase = brainrotPhrases[Math.floor(Math.random() * brainrotPhrases.length)];
       const utterance = new SpeechSynthesisUtterance(phrase);
@@ -223,6 +251,8 @@ export default function Home() {
         status === 'slashed' ? 'bg-red-950' : status === 'success' ? 'bg-green-950' : 'bg-black'
       }`}
     >
+      <img ref={imgRef} className="fixed pointer-events-none opacity-0 z-50 w-64 h-64 object-contain" />
+
       <div className="absolute top-4 right-4 flex gap-4">
         <label className="flex items-center gap-2 text-xs">
           <input 
