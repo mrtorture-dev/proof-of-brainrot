@@ -218,6 +218,7 @@ export default function Home() {
   return (
     <div 
       ref={containerRef}
+      onClick={() => { if (status === 'mining') handleSlash(); }}
       className={`min-h-screen flex flex-col items-center justify-center p-6 text-white font-mono transition-colors duration-300 ${
         status === 'slashed' ? 'bg-red-950' : status === 'success' ? 'bg-green-950' : 'bg-black'
       }`}
